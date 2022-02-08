@@ -6,5 +6,5 @@ helm install cilium cilium/cilium --version 1.11.1 \
    --set nodePort.enabled=true \
    --set hostPort.enabled=true \
    --set bpf.masquerade=false \
-   --set image.pullPolicy=Never \
+   --set image.pullPolicy=IfNotPresent \
    --set ipam.mode=kubernetes

@@ -1,0 +1,14 @@
+  179  ./upd-cluster-certs.sh 
+  180  docker exec -it kind-worker bash
+  181  docker exec -it kind-worker2 bash
+  182  docker exec -it kind-worker3 bash
+  183  docker exec -it kind-control-plane bash
+  184  ps -eaf
+  185  cd Cilium/
+  186  ls
+  187  mkdir cilium
+  188  cd cilium/
+  189  ls
+  190  cp ../docker/upd-certs.sh .
+  191  vi upd-certs.sh 
+  192  ./upd-certs.sh 
