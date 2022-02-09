@@ -1,0 +1,1 @@
+https://docs.cilium.io/en/v1.8/operations/troubleshooting/
