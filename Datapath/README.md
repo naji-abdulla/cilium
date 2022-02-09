@@ -5,3 +5,10 @@
 
 
 https://k8s.networkop.co.uk/cni/cilium/
+
+
+> Datapath
+
+https://docs.cilium.io/en/v1.9/concepts/ebpf/lifeofapacket/
+
+
