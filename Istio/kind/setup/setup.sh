@@ -9,4 +9,4 @@
   helm status istio-base
   helm get all istio-base
   kubectl get pods -A
-  helm install istiod istio/istiod -n istio-system --wait
+  helm install istiod istio/istiod -n istio-system --wait --timeout 3600
