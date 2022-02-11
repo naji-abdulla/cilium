@@ -10,3 +10,8 @@
   helm get all istio-base
   kubectl get pods -A
   helm install istiod istio/istiod -n istio-system --wait --timeout 3600
+
+kubectl create namespace istio-ingress
+ kubectl label namespace istio-ingress istio-injection=enabled
+ helm install istio-ingress istio/gateway -n istio-ingress --wait
+helm ls -n istio-system
