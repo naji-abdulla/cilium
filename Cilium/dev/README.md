@@ -1,5 +1,7 @@
 # Dependencies
 
+https://docs.cilium.io/en/latest/contributing/development/dev_setup/#requirements
+
          sudo apt-get install build-essential
 
 > clang
