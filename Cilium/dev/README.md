@@ -13,3 +13,7 @@
 > llvm
 
          link-create.sh
+
+> go
+
+         apt install golang-go
