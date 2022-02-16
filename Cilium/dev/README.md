@@ -28,3 +28,10 @@ https://docs.cilium.io/en/latest/contributing/development/dev_setup/#requirement
          wget https://dl.google.com/go/go1.17.7.linux-amd64.tar.gz
          sudo tar -xvf go1.17.7.linux-amd64.tar.gz
          sudo mv go /usr/local 
+
+> cfssl
+
+https://computingforgeeks.com/how-to-install-cloudflare-cfssl-on-linux-macos/
+
+         go get -d github.com/cloudflare/cfssl/cmd/cfssl
+         
