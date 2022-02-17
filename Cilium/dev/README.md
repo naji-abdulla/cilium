@@ -1,3 +1,9 @@
+
+
+https://github.com/cilium/cilium
+
+https://docs.cilium.io/en/v1.9/contributing/development/dev_setup/
+
 # Dependencies
 
 https://docs.cilium.io/en/latest/contributing/development/dev_setup/#requirements
