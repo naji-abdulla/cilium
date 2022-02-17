@@ -35,19 +35,3 @@ https://computingforgeeks.com/how-to-install-cloudflare-cfssl-on-linux-macos/
 
          go get -d github.com/cloudflare/cfssl/cmd/cfssl
          
-
-# Build Steps
-
-	Set go profile	
-	go mod vendor	
-	ln -s /usr/bin/llc-12 /usr/bin/llc
-
-
-# Code
-
-https://docs.cilium.io/en/v1.9/contributing/development/codeoverview/
-
-
-# Vagrant
-
-https://docs.cilium.io/en/latest/contributing/development/dev_setup/#requirements
