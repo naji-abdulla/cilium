@@ -140,26 +140,26 @@ func (k *K8sWatcher) GetK8sNode(_ context.Context, nodeName string) (*v1.Node, e
 // to keep CiliumNode objects in sync with the node ones.
 type ciliumNodeUpdater struct {
 	k8sWatcher         *K8sWatcher
-	nodeDiscovery      *nodediscovery.NodeDiscovery
+	localNode          nodediscovery.LocalNode
 	kvStoreNodeUpdater nodediscovery.KVStoreNodeUpdater
 }
 
-func NewCiliumNodeUpdater(k8sWatcher *K8sWatcher, kvStoreNodeUpdater nodediscovery.KVStoreNodeUpdater, nodeDiscovery *nodediscovery.NodeDiscovery) *ciliumNodeUpdater {
+func NewCiliumNodeUpdater(k8sWatcher *K8sWatcher, kvStoreNodeUpdater nodediscovery.KVStoreNodeUpdater, localNode nodediscovery.LocalNode) *ciliumNodeUpdater {
 	return &ciliumNodeUpdater{
 		k8sWatcher:         k8sWatcher,
 		kvStoreNodeUpdater: kvStoreNodeUpdater,
-		nodeDiscovery:      nodeDiscovery,
+		localNode:          localNode,
 	}
 }
 
 func (u *ciliumNodeUpdater) OnAddNode(newNode *v1.Node, swg *lock.StoppableWaitGroup) error {
-	u.updateCiliumNode(u.kvStoreNodeUpdater, u.nodeDiscovery, newNode)
+	u.updateCiliumNode(u.kvStoreNodeUpdater, u.localNode, newNode)
 
 	return nil
 }
 
 func (u *ciliumNodeUpdater) OnUpdateNode(oldNode, newNode *v1.Node, swg *lock.StoppableWaitGroup) error {
-	u.updateCiliumNode(u.kvStoreNodeUpdater, u.nodeDiscovery, newNode)
+	u.updateCiliumNode(u.kvStoreNodeUpdater, u.localNode, newNode)
 
 	return nil
 }
@@ -168,7 +168,7 @@ func (u *ciliumNodeUpdater) OnDeleteNode(*v1.Node, *lock.StoppableWaitGroup) err
 	return nil
 }
 
-func (u *ciliumNodeUpdater) updateCiliumNode(kvStoreNodeUpdater nodediscovery.KVStoreNodeUpdater, nodeDiscovery *nodediscovery.NodeDiscovery, node *v1.Node) {
+func (u *ciliumNodeUpdater) updateCiliumNode(kvStoreNodeUpdater nodediscovery.KVStoreNodeUpdater, localNode nodediscovery.LocalNode, node *v1.Node) {
 	var (
 		controllerName = fmt.Sprintf("sync-node-with-ciliumnode (%v)", node.Name)
 
@@ -210,7 +210,7 @@ func (u *ciliumNodeUpdater) updateCiliumNode(kvStoreNodeUpdater nodediscovery.KV
 			}
 
 		nextLocalNodeAddress:
-			for _, localNodeAddress := range nodeDiscovery.LocalNode.IPAddresses {
+			for _, localNodeAddress := range localNode.GetIPAddresses() {
 				localNodeAddressStr := localNodeAddress.IP.String()
 
 				for _, nodeResourceAddress := range ciliumNode.Spec.Addresses {

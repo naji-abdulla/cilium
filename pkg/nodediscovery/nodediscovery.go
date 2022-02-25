@@ -30,6 +30,7 @@ import (
 	"github.com/cilium/cilium/pkg/k8s"
 	ciliumv2 "github.com/cilium/cilium/pkg/k8s/apis/cilium.io/v2"
 	k8sTypes "github.com/cilium/cilium/pkg/k8s/slim/k8s/api/core/v1"
+	"github.com/cilium/cilium/pkg/lock"
 	"github.com/cilium/cilium/pkg/logging"
 	"github.com/cilium/cilium/pkg/logging/logfields"
 	"github.com/cilium/cilium/pkg/mtu"
@@ -61,11 +62,16 @@ type KVStoreNodeUpdater interface {
 	UpdateKVNodeEntry(node *nodeTypes.Node) error
 }
 
+type LocalNode interface {
+	GetIPAddresses() []nodeTypes.Address
+}
+
 // NodeDiscovery represents a node discovery action
 type NodeDiscovery struct {
 	Manager               *nodemanager.Manager
 	LocalConfig           datapath.LocalNodeConfiguration
 	Registrar             nodestore.NodeRegistrar
+	localNodeLock         lock.RWMutex
 	LocalNode             nodeTypes.Node
 	Registered            chan struct{}
 	LocalStateInitialized chan struct{}
@@ -171,6 +177,9 @@ func (n *NodeDiscovery) JoinCluster(nodeName string) {
 // agent startup to configure the local node based on the configuration options
 // passed to the agent. nodeName is the name to be used in the local agent.
 func (n *NodeDiscovery) StartDiscovery(nodeName string) {
+	n.localNodeLock.Lock()
+	defer n.localNodeLock.Unlock()
+
 	n.LocalNode.Name = nodeName
 	n.LocalNode.Cluster = option.Config.ClusterName
 	n.LocalNode.IPAddresses = []nodeTypes.Address{}
@@ -636,4 +645,11 @@ func (nodeDiscovery *NodeDiscovery) UpdateKVNodeEntry(node *nodeTypes.Node) erro
 	}
 
 	return nil
+}
+
+func (nodeDiscovery *NodeDiscovery) GetIPAddresses() []nodeTypes.Address {
+	nodeDiscovery.localNodeLock.RLock()
+	defer nodeDiscovery.localNodeLock.RUnlock()
+
+	return append([]nodeTypes.Address{}, nodeDiscovery.LocalNode.IPAddresses...)
 }
