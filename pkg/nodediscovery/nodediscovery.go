@@ -57,6 +57,10 @@ type k8sNodeGetter interface {
 	GetK8sNode(ctx context.Context, nodeName string) (*corev1.Node, error)
 }
 
+type KVStoreNodeUpdater interface {
+	UpdateKVNodeEntry(node *nodeTypes.Node) error
+}
+
 // NodeDiscovery represents a node discovery action
 type NodeDiscovery struct {
 	Manager               *nodemanager.Manager
@@ -620,4 +624,16 @@ func (n *NodeDiscovery) RegisterK8sNodeGetter(k8sNodeGetter k8sNodeGetter) {
 
 func getInt(i int) *int {
 	return &i
+}
+
+func (nodeDiscovery *NodeDiscovery) UpdateKVNodeEntry(node *nodeTypes.Node) error {
+	if nodeDiscovery.Registrar.SharedStore == nil {
+		return fmt.Errorf("node registrar is not yet initialized")
+	}
+
+	if err := nodeDiscovery.Registrar.UpdateLocalKeySync(node); err != nil {
+		return fmt.Errorf("failed to update KV node store entry: %w", err)
+	}
+
+	return nil
 }

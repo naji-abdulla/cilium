@@ -139,25 +139,27 @@ func (k *K8sWatcher) GetK8sNode(_ context.Context, nodeName string) (*v1.Node, e
 // ciliumNodeUpdater implements the subscriber.Node interface and is used
 // to keep CiliumNode objects in sync with the node ones.
 type ciliumNodeUpdater struct {
-	k8sWatcher    *K8sWatcher
-	nodeDiscovery *nodediscovery.NodeDiscovery
+	k8sWatcher         *K8sWatcher
+	nodeDiscovery      *nodediscovery.NodeDiscovery
+	kvStoreNodeUpdater nodediscovery.KVStoreNodeUpdater
 }
 
-func NewCiliumNodeUpdater(k8sWatcher *K8sWatcher, nodeDiscovery *nodediscovery.NodeDiscovery) *ciliumNodeUpdater {
+func NewCiliumNodeUpdater(k8sWatcher *K8sWatcher, kvStoreNodeUpdater nodediscovery.KVStoreNodeUpdater, nodeDiscovery *nodediscovery.NodeDiscovery) *ciliumNodeUpdater {
 	return &ciliumNodeUpdater{
-		k8sWatcher:    k8sWatcher,
-		nodeDiscovery: nodeDiscovery,
+		k8sWatcher:         k8sWatcher,
+		kvStoreNodeUpdater: kvStoreNodeUpdater,
+		nodeDiscovery:      nodeDiscovery,
 	}
 }
 
 func (u *ciliumNodeUpdater) OnAddNode(newNode *v1.Node, swg *lock.StoppableWaitGroup) error {
-	u.updateCiliumNode(u.nodeDiscovery, newNode)
+	u.updateCiliumNode(u.kvStoreNodeUpdater, u.nodeDiscovery, newNode)
 
 	return nil
 }
 
 func (u *ciliumNodeUpdater) OnUpdateNode(oldNode, newNode *v1.Node, swg *lock.StoppableWaitGroup) error {
-	u.updateCiliumNode(u.nodeDiscovery, newNode)
+	u.updateCiliumNode(u.kvStoreNodeUpdater, u.nodeDiscovery, newNode)
 
 	return nil
 }
@@ -166,7 +168,7 @@ func (u *ciliumNodeUpdater) OnDeleteNode(*v1.Node, *lock.StoppableWaitGroup) err
 	return nil
 }
 
-func (u *ciliumNodeUpdater) updateCiliumNode(nodeDiscovery *nodediscovery.NodeDiscovery, node *v1.Node) {
+func (u *ciliumNodeUpdater) updateCiliumNode(kvStoreNodeUpdater nodediscovery.KVStoreNodeUpdater, nodeDiscovery *nodediscovery.NodeDiscovery, node *v1.Node) {
 	var (
 		controllerName = fmt.Sprintf("sync-node-with-ciliumnode (%v)", node.Name)
 
@@ -176,13 +178,7 @@ func (u *ciliumNodeUpdater) updateCiliumNode(nodeDiscovery *nodediscovery.NodeDi
 
 	doFunc := func(ctx context.Context) (err error) {
 		if option.Config.KVStore != "" {
-			if nodeDiscovery.Registrar.SharedStore == nil {
-				return fmt.Errorf("node registrar is not yet initialized")
-			}
-
-			if err := nodeDiscovery.Registrar.UpdateLocalKeySync(k8sNodeParsed); err != nil {
-				return fmt.Errorf("failed to update KV store entry: %s", err)
-			}
+			return kvStoreNodeUpdater.UpdateKVNodeEntry(k8sNodeParsed)
 		} else {
 			u.k8sWatcher.ciliumNodeStoreMU.RLock()
 			defer u.k8sWatcher.ciliumNodeStoreMU.RUnlock()
