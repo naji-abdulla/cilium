@@ -16,7 +16,7 @@ clean:
 builder-image: Dockerfile requirements.txt
 	# Pre-pull FROM docker images due to Buildkit sometimes failing to pull them.
 	grep "^FROM " $< | cut -d ' ' -f2 | xargs -n1 docker pull
-	$(QUIET)tar c requirements.txt Dockerfile \
+	$(QUIET)tar c cacert-pypi.org.crt cacert-github.com.crt requirements.txt Dockerfile \
 	  | $(CONTAINER_ENGINE) build --tag cilium/docs-builder -
 
 # cilium must have all build artifacts present for

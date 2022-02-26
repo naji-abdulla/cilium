@@ -7,7 +7,6 @@ RUN apk add --no-cache --virtual --update \
     nodejs \
     npm \
     bash \
-    ca-certificates \
     enchant \
     git \
     libc6-compat \
@@ -18,7 +17,12 @@ RUN apk add --no-cache --virtual --update \
     musl-dev \
     && true
 
+COPY cacert-pypi.org.crt /usr/local/share/ca-certificates/
+COPY cacert-github.com.crt /usr/local/share/ca-certificates/
 ADD ./requirements.txt /tmp/requirements.txt
+
+RUN update-ca-certificates
+
 RUN pip install -r /tmp/requirements.txt
 
 ENV HOME=/tmp
