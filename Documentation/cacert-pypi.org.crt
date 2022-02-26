@@ -1,0 +1,176 @@
+CONNECTED(00000003)
+---
+Certificate chain
+ 0 s:CN = *.pypi.org
+   i:C = US, ST = CA, L = San Jose, O = eBay, OU = 09ec9aa29e03b1742c48b6e796a7ef6e, CN = ca.ebay.goskope.com, emailAddress = certadmin@netskope.com
+-----BEGIN CERTIFICATE-----
+MIIDyDCCArCgAwIBAgIQHUCrzj+pRT+roh/IrNHuKzANBgkqhkiG9w0BAQsFADCB
+rDELMAkGA1UEBhMCVVMxCzAJBgNVBAgTAkNBMREwDwYDVQQHEwhTYW4gSm9zZTEN
+MAsGA1UEChMEZUJheTEpMCcGA1UECxMgMDllYzlhYTI5ZTAzYjE3NDJjNDhiNmU3
+OTZhN2VmNmUxHDAaBgNVBAMTE2NhLmViYXkuZ29za29wZS5jb20xJTAjBgkqhkiG
+9w0BCQEWFmNlcnRhZG1pbkBuZXRza29wZS5jb20wHhcNMjIwMTE3MTgxMzU3WhcN
+MjMwMjE2MTgxMzU3WjAVMRMwEQYDVQQDDAoqLnB5cGkub3JnMIIBIjANBgkqhkiG
+9w0BAQEFAAOCAQ8AMIIBCgKCAQEAz8PJu6Pk9k349yq201V1ZX3v+ofCIsrKQYLV
++lO6bgHmlfYbXlHYj81XmEWPE3fAUSuno6SS7OgHwkwuCehcxRML/vcozKkgLwoB
+dyRDqzwZAPyQT2SJ0VtH1Gd62asceV8Mz8+wByUBlTf45wf/yJKFyOuNkY7R5CoI
+1Gvbeslpq9rwo3Gg7HacJKXGaoQi7/O1rw4TMxH0YDIjMF5Xb9HjyTn8UzUAdj4C
+Y3hxTX94yaYYDE1yDz3n1eR/5EOjqaq6yzhY1lhZfDUT8PKH07nYTT0C1iG38rSt
+/+mF/0osiosXuOJCWHV6bLV70wq/Y8gEJVHoZj6Cxv1Fthm2JQIDAQABo3wwejAJ
+BgNVHRMEAjAAMB0GA1UdDgQWBBTgTVJHpwL1d5DJaK0qROTnvA3VtjAfBgNVHREE
+GDAWggoqLnB5cGkub3JngghweXBpLm9yZzAOBgNVHQ8BAf8EBAMCBaAwHQYDVR0l
+BBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMA0GCSqGSIb3DQEBCwUAA4IBAQAWRlJh
+LLWzfZj6LFkw2I4Mi5RKdAcrHi6Ua/BrNV2AdN7JEfY/B2ejC+UBwyb8r8N3fmpB
+5662zjHqRbCh6pvrQCG8PpM8cuMTYc1doxyWIv/+iyZiIM+d0CdKBxiwPAHFSGxV
+9NLEeyvvgjrH/Kq4B9P0hE+c8QpPtywU1HYNnF88pMJxI/FncDjXY55fggT9bPUd
+RdDh1nXHoppmuJE7d8KyPVRKtpYwZfw+zfF5F3vNlaoiPjYtsnPw+O7coMg0SHtL
+jEo5MJMKCUqF90WvLBpcY2OEMksxDQICtL9UMdX/ZhLMtK+PHUqK3/qa9sue65Mc
+tVNyU3hGVAu+jT21
+-----END CERTIFICATE-----
+ 1 s:C = US, ST = CA, L = San Jose, O = eBay, OU = 09ec9aa29e03b1742c48b6e796a7ef6e, CN = ca.ebay.goskope.com, emailAddress = certadmin@netskope.com
+   i:C = US, ST = CA, L = Santa Clara, O = Netskope Inc., OU = certadmin, CN = certadmin, emailAddress = certadmin@netskope.com
+-----BEGIN CERTIFICATE-----
+MIIEuzCCA6OgAwIBAgIDCvMlMA0GCSqGSIb3DQEBCwUAMIGXMQswCQYDVQQGEwJV
+UzELMAkGA1UECBMCQ0ExFDASBgNVBAcTC1NhbnRhIENsYXJhMRYwFAYDVQQKEw1O
+ZXRza29wZSBJbmMuMRIwEAYDVQQLEwljZXJ0YWRtaW4xEjAQBgNVBAMTCWNlcnRh
+ZG1pbjElMCMGCSqGSIb3DQEJARYWY2VydGFkbWluQG5ldHNrb3BlLmNvbTAeFw0y
+MDA1MDgwNDAyMThaFw0zMDA1MDYwNDAyMThaMIGsMQswCQYDVQQGEwJVUzELMAkG
+A1UECBMCQ0ExETAPBgNVBAcTCFNhbiBKb3NlMQ0wCwYDVQQKEwRlQmF5MSkwJwYD
+VQQLEyAwOWVjOWFhMjllMDNiMTc0MmM0OGI2ZTc5NmE3ZWY2ZTEcMBoGA1UEAxMT
+Y2EuZWJheS5nb3Nrb3BlLmNvbTElMCMGCSqGSIb3DQEJARYWY2VydGFkbWluQG5l
+dHNrb3BlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANSDbRkR
+WIUu+g0Im7FvWuBhUbEUw3guzdd4tMVBE7brVUF2se0Y8kY6G80q7zehQHtEG/Bd
+qgjGuJojFEjlNkds7nsBTUvArc4mipqsqaOFXLYbH+pkRUuo173WtfsuiA8LLTcX
+utLh9ZOx6eW4rXYOHg1iPbn8Ycs+8GgTITayrIOhTS5axOMyLdMBBn205ecMn08I
+WhpQXnxNUiadjruRvAcG6u995O4bjJ+3FJSus0BYzSlmVzewKuRRZObp+XH1S1Mq
+NmYfshCQDUJVHQVUQFS3Hd/pb1MuzcMioE/KYhm/Da8yDPdwoPr4HVAJF57/FU5c
+uFVX5pIQAnoHaJkCAwEAAaOB+DCB9TAMBgNVHRMEBTADAQH/MB0GA1UdDgQWBBTw
+R3sorhN0TupJmshQYg+LdUKUfjCBxQYDVR0jBIG9MIG6gBSvIpNrMIV6Lcujo5SC
+GWw3AGl7VKGBnaSBmjCBlzELMAkGA1UEBhMCVVMxCzAJBgNVBAgTAkNBMRQwEgYD
+VQQHEwtTYW50YSBDbGFyYTEWMBQGA1UEChMNTmV0c2tvcGUgSW5jLjESMBAGA1UE
+CxMJY2VydGFkbWluMRIwEAYDVQQDEwljZXJ0YWRtaW4xJTAjBgkqhkiG9w0BCQEW
+FmNlcnRhZG1pbkBuZXRza29wZS5jb22CAgE4MA0GCSqGSIb3DQEBCwUAA4IBAQAC
+vTV8uP5Rz2qzhTl5jxuwpTYWtt7IWdlL+HpbGBDx04hHNn91SxQHScu6prKYjS1X
+FagIrryBNtNQu7ElrNxafrJ7GsiV6oRZZ4cKZIuC6mbrpBfod0UFMzi1ycXsGcs4
+Pt6QMcDQRoiLY+p+7UYlDB6A8LIg9ROTKgRFHaV3pb3Y24vXhi/B6w74mbBXR6T4
+3OvyVN6hkuz/fUEWApH3H4UGY6j9oljVl/zrp3peUq1tWudp5RCqS1Gp5bLSF14P
+euxVsP+kNCUI3q/TKUJFWkUi7GqajJZ1CNqXL6hokRgQdPMbuoJVGeCcubSFcl8y
+3Kh2/sRQUiUHGWs325Ik
+-----END CERTIFICATE-----
+ 2 s:C = US, ST = CA, L = Santa Clara, O = Netskope Inc., OU = certadmin, CN = certadmin, emailAddress = certadmin@netskope.com
+   i:C = US, ST = CA, L = Santa Clara, O = Netskope Inc., OU = certadmin, CN = certadmin, emailAddress = certadmin@netskope.com
+-----BEGIN CERTIFICATE-----
+MIID/DCCAuSgAwIBAgICATgwDQYJKoZIhvcNAQELBQAwgZcxCzAJBgNVBAYTAlVT
+MQswCQYDVQQIEwJDQTEUMBIGA1UEBxMLU2FudGEgQ2xhcmExFjAUBgNVBAoTDU5l
+dHNrb3BlIEluYy4xEjAQBgNVBAsTCWNlcnRhZG1pbjESMBAGA1UEAxMJY2VydGFk
+bWluMSUwIwYJKoZIhvcNAQkBFhZjZXJ0YWRtaW5AbmV0c2tvcGUuY29tMB4XDTE5
+MTAyNTE4MTg1MFoXDTI5MTAyMjE4MTg1MFowgZcxCzAJBgNVBAYTAlVTMQswCQYD
+VQQIEwJDQTEUMBIGA1UEBxMLU2FudGEgQ2xhcmExFjAUBgNVBAoTDU5ldHNrb3Bl
+IEluYy4xEjAQBgNVBAsTCWNlcnRhZG1pbjESMBAGA1UEAxMJY2VydGFkbWluMSUw
+IwYJKoZIhvcNAQkBFhZjZXJ0YWRtaW5AbmV0c2tvcGUuY29tMIIBIjANBgkqhkiG
+9w0BAQEFAAOCAQ8AMIIBCgKCAQEAuYamgJifcWI3j9zv6OHI0hCQnZHj8uuzZ6sw
+nfbediwij9X7MTbQZmswXZt4EgJ58uPN8Opt3+eh+XGP1wbQemUIm9ZkL5WzMVxP
+3xW/twL5hBBQOXvn6JX5HS8N53fiDDU8LCuc0xj0Kpdl3TiDDpebtJe6UPiwebyz
+jtOwD3ddpiIlArvRzUU1Hi9RIey2clf//3NChyvteQ3TIhciwxbViOxPHxXTRI7w
+znFlwuDxvx7X5wwDkI2vzV2jpn23uIROjpCYC7kLvGInEKrgVAzoKauaC+tJmiJY
+91m2KGN6xGc94JMRawH6Q+wv/7cBsOGVOUVIpxcM1XS5UqngTwIDAQABo1AwTjAM
+BgNVHRMEBTADAQH/MB0GA1UdDgQWBBSvIpNrMIV6Lcujo5SCGWw3AGl7VDAfBgNV
+HSMEGDAWgBSvIpNrMIV6Lcujo5SCGWw3AGl7VDANBgkqhkiG9w0BAQsFAAOCAQEA
+pKVWEFpG7/d0kAhre2eYLwYEf6tVVP2to9Cp8RgBFSG/ScmEqt2/TXXcpMjRI5eG
+nOUbPJIQJi2TQEiI/BG/g6CJZWJiE3fR3NTCksbLbcbdl7exkKT/tItebf4qXlca
+ASSd0hBTygE7QqOPSENnSrj7r9P0gv0Z2Bf5jKdirhr/clz/ev88O3KYuxqwwl31
+vyLDT0hd/Dzka2/ZKMXL5uFAtsYqpU4hz5NeGgNntKAkwcfFgsTh/NZaYjyRhvUp
+jRBt2Mt8OwtxJ+vPM4mvpwFMzvfzhdJfKX/p6IWOJjDFHHFRqdFaHvW3zzarzFt6
+tLom62fi7946+fyBmEPu5w==
+-----END CERTIFICATE-----
+---
+Server certificate
+subject=CN = *.pypi.org
+
+issuer=C = US, ST = CA, L = San Jose, O = eBay, OU = 09ec9aa29e03b1742c48b6e796a7ef6e, CN = ca.ebay.goskope.com, emailAddress = certadmin@netskope.com
+
+---
+No client certificate CA names sent
+Peer signing digest: SHA256
+Peer signature type: RSA-PSS
+Server Temp Key: X25519, 253 bits
+---
+SSL handshake has read 3777 bytes and written 380 bytes
+Verification error: self signed certificate in certificate chain
+---
+New, TLSv1.3, Cipher is TLS_AES_256_GCM_SHA384
+Server public key is 2048 bit
+Secure Renegotiation IS NOT supported
+Compression: NONE
+Expansion: NONE
+No ALPN negotiated
+Early data was not sent
+Verify return code: 19 (self signed certificate in certificate chain)
+---
+---
+Post-Handshake New Session Ticket arrived:
+SSL-Session:
+    Protocol  : TLSv1.3
+    Cipher    : TLS_AES_256_GCM_SHA384
+    Session-ID: 9BF6DE3EC17E9C361363B8F72B50871A67EE2606EC804AEB4C1C74BF194BF50B
+    Session-ID-ctx: 
+    Resumption PSK: 02A41CA1EA33AE489C53F3EFCA153CE439FBBAFFB54D57E248049480128CF5518C0C4367E88346905CB4BA4FBE2AAA8F
+    PSK identity: None
+    PSK identity hint: None
+    SRP username: None
+    TLS session ticket lifetime hint: 7200 (seconds)
+    TLS session ticket:
+    0000 - a0 f4 3f 64 ed 22 56 4f-33 46 f3 00 59 8d 29 7a   ..?d."VO3F..Y.)z
+    0010 - fa b7 16 26 f9 2f 6f a4-a7 d5 9f 6c ab 5d 96 44   ...&./o....l.].D
+    0020 - 4b b6 72 63 cc c1 4a aa-6d 3b 80 96 bd fa 11 89   K.rc..J.m;......
+    0030 - 46 13 ec 3a 39 35 91 16-b5 68 f6 e7 ab 49 0f 11   F..:95...h...I..
+    0040 - d1 cd 38 08 71 e9 60 aa-7a b3 f8 66 26 f0 c0 1c   ..8.q.`.z..f&...
+    0050 - 11 57 6b 69 2d 52 15 c3-b5 29 9f f6 51 ba e4 ef   .Wki-R...)..Q...
+    0060 - 9c 96 5c 0e e6 c5 a0 1c-66 1f 85 d7 18 64 7b 8f   ..\.....f....d{.
+    0070 - 5d bb c0 0b e3 8c 26 6e-93 b9 93 b4 2d 6d bc 32   ].....&n....-m.2
+    0080 - 95 4f b5 b3 57 be 22 b5-e5 01 e7 32 b4 91 02 38   .O..W."....2...8
+    0090 - 5d a8 15 e3 38 e2 e4 5d-b6 50 e0 90 f4 a7 ab 01   ]...8..].P......
+    00a0 - eb ee a2 cf 75 61 7b 0d-d5 e7 5e 2e 41 8d 73 42   ....ua{...^.A.sB
+    00b0 - fc b3 06 91 d6 70 be f3-15 ef 12 e4 76 fa 24 b1   .....p......v.$.
+    00c0 - 76 f2 55 70 d0 1e ab ef-10 dd 61 9c cf dc c4 98   v.Up......a.....
+
+    Start Time: 1645043282
+    Timeout   : 7200 (sec)
+    Verify return code: 19 (self signed certificate in certificate chain)
+    Extended master secret: no
+    Max Early Data: 0
+---
+read R BLOCK
+---
+Post-Handshake New Session Ticket arrived:
+SSL-Session:
+    Protocol  : TLSv1.3
+    Cipher    : TLS_AES_256_GCM_SHA384
+    Session-ID: 85B438992585F7B1BDF5ED2DDBD3F681D92154ECAC9BE6B6A3A6DB90CBC153A0
+    Session-ID-ctx: 
+    Resumption PSK: 7C2CCF5E75E69C711C8A95F87A8DF068D1E45FD1160C4B1008BCE5E69C7C15BD80BF851354140A1939A325936E14F409
+    PSK identity: None
+    PSK identity hint: None
+    SRP username: None
+    TLS session ticket lifetime hint: 7200 (seconds)
+    TLS session ticket:
+    0000 - a0 f4 3f 64 ed 22 56 4f-33 46 f3 00 59 8d 29 7a   ..?d."VO3F..Y.)z
+    0010 - f1 f0 ab 5d 1e 3e de 6e-74 3d b3 73 fa e5 d9 81   ...].>.nt=.s....
+    0020 - 34 56 f4 23 e9 97 bb 26-e2 37 99 96 aa 3c be a9   4V.#...&.7...<..
+    0030 - 15 ca bb 99 13 bf 63 21-e2 0e d1 da c6 c3 f5 10   ......c!........
+    0040 - b9 1c 2a 3d 05 3b f3 e5-f5 9d 35 ba 53 98 6a 62   ..*=.;....5.S.jb
+    0050 - 0f 2f 0b 7a 92 33 17 17-6e e9 65 17 18 3a 3d 63   ./.z.3..n.e..:=c
+    0060 - 40 ef e9 3c c3 8e 13 08-fb 02 aa cc e1 57 ed 10   @..<.........W..
+    0070 - 8a 8c b5 60 98 67 1a 81-8b 9f 8f 57 57 d7 b0 db   ...`.g.....WW...
+    0080 - 95 6b 18 c3 d4 16 aa 55-8c 95 ec dd 5d ff 02 a1   .k.....U....]...
+    0090 - e1 fb 9c 17 54 87 01 0a-f2 be 1a be fe f8 2e 61   ....T..........a
+    00a0 - 51 23 01 f3 8f a7 1e a8-02 55 93 e4 ac 98 2b ae   Q#.......U....+.
+    00b0 - 3c a3 fd 47 b6 fa 40 c1-5b f4 32 50 3f 3f bc 02   <..G..@.[.2P??..
+    00c0 - 0b 2f dd 1b fa 3c 64 24-89 8f a1 3b ab 90 49 e3   ./...<d$...;..I.
+
+    Start Time: 1645043282
+    Timeout   : 7200 (sec)
+    Verify return code: 19 (self signed certificate in certificate chain)
+    Extended master secret: no
+    Max Early Data: 0
+---
+read R BLOCK
