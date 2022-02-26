@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 ##@ Default
-all: precheck build postcheck ## Default make target that perform precheck -> build -> postcheck
+all: precheck build # Default make target that perform precheck -> build -> postcheck
 	@echo "Build finished."
 
 ##@ Build, Install and Test
@@ -487,7 +487,7 @@ check-microk8s: ## Validate if microk8s is ready to install cilium.
 	$(QUIET)microk8s.status >/dev/null \
 		|| (echo "Error: Microk8s is not running" && exit 1)
 
-LOCAL_IMAGE_TAG=local
+LOCAL_IMAGE_TAG=local.3
 microk8s: export DOCKER_REGISTRY=localhost:32000
 microk8s: export LOCAL_IMAGE=$(DOCKER_REGISTRY)/$(DOCKER_DEV_ACCOUNT)/cilium-dev:$(LOCAL_IMAGE_TAG)
 microk8s: check-microk8s ## Build cilium-dev docker image and import to microk8s
@@ -559,13 +559,13 @@ update-authors: ## Update AUTHORS file for Cilium repository.
 	@cat .authors.aux >> AUTHORS
 
 test-docs: ## Build HTML documentation.
-	$(MAKE) -C Documentation html
+#	$(MAKE) -C Documentation html
 
 render-docs: test-docs ## Run server to render documentation.
-	$(MAKE) -C Documentation run-server
+#	$(MAKE) -C Documentation run-server
 
 render-docs-live-preview: ## Run server with live preview to render documentation.
-	$(MAKE) -C Documentation live-preview
+#	$(MAKE) -C Documentation live-preview
 
 manpages: ## Generate manpage for Cilium CLI.
 	-rm -r man
@@ -577,7 +577,7 @@ install-manpages: ## Install manpages the Cilium CLI.
 	mandb
 
 postcheck: build ## Run Cilium build postcheck (update-cmdref, build documentation etc.).
-	$(QUIET)$(MAKE) $(SUBMAKEOPTS) -C Documentation check
+#	$(QUIET)$(MAKE) $(SUBMAKEOPTS) -C Documentation check
 
 licenses-all: ## Generate file with all the License from dependencies.
 	@$(GO) run ./tools/licensegen > LICENSE.all || ( rm -f LICENSE.all ; false )
