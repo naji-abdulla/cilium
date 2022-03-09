@@ -1,0 +1,5 @@
+vagrant halt
+vagrant destroy
+vagrant list
+vagrant global-status
+vagrant box list
