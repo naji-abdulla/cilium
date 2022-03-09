@@ -235,7 +235,7 @@ fi
 if [ -n "${VM_PROXY}" ]; then
     export WGET="HTTPS_PROXY=${VM_PROXY} wget"
 else
-    export WGET="wget"
+    export WGET="wget --no-check-certificate"
 fi
 export ETCD_CLEAN="${ETCD_CLEAN}"
 
