@@ -1,0 +1,30 @@
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: tiefighter
+  labels:
+    org: empire
+    class: tiefighter
+    app.kubernetes.io/name: tiefighter
+spec:
+  containers:
+  - name: spaceship
+    image: docker.io/tgraf/netperf
+  nodeSelector:
+    node-label: worker
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: xwing
+  labels:
+    app.kubernetes.io/name: xwing
+    org: alliance
+    class: xwing
+spec:
+  containers:
+  - name: spaceship
+    image: docker.io/tgraf/netperf
+  nodeSelector:
+    node-label: worker
