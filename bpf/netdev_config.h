@@ -7,7 +7,9 @@
  */
 #define DROP_NOTIFY
 #ifndef SKIP_DEBUG
+#ifndef DEBUG
 #define DEBUG
+#endif
 #endif
 #define SECLABEL 2
 #define SECLABEL_NB 0xfffff

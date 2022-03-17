@@ -552,6 +552,7 @@ static __always_inline int handle_ipv4_from_lxc(struct __ctx_buff *ctx,
 	enum trace_reason reason;
 	enum ct_status ct_status;
 	__u16 proxy_port;
+	int val1, val2;
 
 	if (!revalidate_data(ctx, &data, &data_end, &ip4))
 		return DROP_INVALID;
@@ -576,6 +577,10 @@ static __always_inline int handle_ipv4_from_lxc(struct __ctx_buff *ctx,
 	tuple.saddr = ip4->saddr;
 
 	l4_off = l3_off + ipv4_hdrlen(ip4);
+
+        val1 = 200;
+        val2 = 300;
+	cilium_dbg(ctx, DBG_GENERIC, val1, val2);
 
 #ifdef ENABLE_PER_PACKET_LB
 	{

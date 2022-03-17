@@ -4,6 +4,10 @@
 #ifndef __LIB_DBG__
 #define __LIB_DBG__
 
+#ifndef DEBUG
+#define DEBUG 1
+#endif
+
 /* Trace types */
 enum {
 	DBG_UNSPEC,

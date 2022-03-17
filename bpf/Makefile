@@ -50,7 +50,6 @@ space := ${null} ${null}
 
 # The following option combinations are compile tested
 LB_OPTIONS = \
-	-DSKIP_DEBUG: \
 	-DENABLE_IPV4: \
 	-DENABLE_IPV4:-DENCAP_IFINDEX:-DTUNNEL_MODE: \
 	-DENABLE_IPV4:-DENCAP_IFINDEX:-DTUNNEL_MODE:-DENABLE_IPV4_FRAGMENTS: \
@@ -80,7 +79,7 @@ LB_OPTIONS = \
 
 # These options are intended to max out the BPF program complexity. it is load
 # tested as well.
-MAX_BASE_OPTIONS = -DSKIP_DEBUG=1 -DENABLE_IPV4=1 -DENABLE_IPV6=1 \
+MAX_BASE_OPTIONS = -DENABLE_IPV4=1 -DENABLE_IPV6=1 \
 	-DENABLE_HOST_SERVICES_TCP=1 -DENABLE_HOST_SERVICES_UDP=1 \
 	-DENABLE_HOST_REDIRECT=1 -DENABLE_ROUTING=1 -DNO_REDIRECT=1 \
 	-DPOLICY_VERDICT_NOTIFY=1 -DALLOW_ICMP_FRAG_NEEDED=1 -DENABLE_IDENTITY_MARK=1 \
@@ -233,7 +232,6 @@ bpf_xdp.o: bpf_xdp.ll
 # The following option combinations are compile tested
 LXC_OPTIONS = \
 	 -DALLOW_ICMP_FRAG_NEEDED: \
-	 -DSKIP_DEBUG: \
 	 -DHAVE_LPM_TRIE_MAP_TYPE: \
 	 -DHAVE_LRU_HASH_MAP_TYPE: \
 	 -DENABLE_IPV4: \

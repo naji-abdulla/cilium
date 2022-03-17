@@ -11,6 +11,11 @@
 #include "time.h"
 #include "static_data.h"
 
+#ifndef DEBUG
+#define DEBUG 1
+#endif
+
+
 #define __min(t_x, t_y, x, y)		\
 ({					\
 	t_x _x = (x);			\

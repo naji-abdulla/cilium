@@ -29,7 +29,9 @@ DEFINE_U32(POLICY_VERDICT_LOG_FILTER, 0xffff);
 #define POLICY_MAP test_cilium_policy_65535
 
 #ifndef SKIP_DEBUG
+#ifndef DEBUG
 #define DEBUG
+#endif
 #endif
 #define DROP_NOTIFY
 #define TRACE_NOTIFY

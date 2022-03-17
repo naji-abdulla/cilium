@@ -2,7 +2,9 @@
 /* Copyright (C) 2018-2020 Authors of Cilium */
 
 /* Ensure declaration of notification event types */
+#ifndef DEBUG
 #define DEBUG
+#endif
 #define TRACE_NOTIFY
 #define DROP_NOTIFY
 #define POLICY_VERDICT_NOTIFY
