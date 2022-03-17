@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -x
 
 dir=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 
@@ -235,7 +236,7 @@ fi
 if [ -n "${VM_PROXY}" ]; then
     export WGET="HTTPS_PROXY=${VM_PROXY} wget"
 else
-    export WGET="wget"
+    export WGET="wget --no-check-certificate"
 fi
 export ETCD_CLEAN="${ETCD_CLEAN}"
 
@@ -607,11 +608,11 @@ function createVm(){
         PROVISION_ARGS="--no-provision"
     fi
     if [ -n "${RELOAD}" ]; then
-        vagrant reload $PROVISION_ARGS $1
+        vagrant reload $PROVISION_ARGS $1 --debug
     elif [ -n "${PROVISION}" ]; then
-        vagrant provision $1
+        vagrant provision $1 --debug
     else
-        vagrant up $PROVISION_ARGS $1
+        vagrant up $PROVISION_ARGS $1 --debug
         if [ "$?" -eq "0" -a -n "${K8S}" ]; then
             hostname=k8s1
             if [ ! -z "$NETNEXT" -a "$NETNEXT" = "true" -o "$NETNEXT" = "1" ]; then

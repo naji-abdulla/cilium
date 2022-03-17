@@ -1,0 +1,6 @@
+export export K8S=1 
+export NWORKERS=1 
+export IPV4=1 
+export SHARE_PARENT
+env 
+./contrib/vagrant/start.sh 2>&1 | tee  /tmp/vag.out

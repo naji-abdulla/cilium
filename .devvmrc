@@ -1,0 +1,9 @@
+#!/usr/bin/sudo bash
+pwd
+cd /home/vagrant/go/src/github.com/cilium/cilium
+cp ./certs.tar.gz /usr/local/share/ca-certificates/
+cp ./root-ca.tar.gz /usr/local/share/ca-certificates/
+cd /usr/local/share/ca-certificates/
+tar -xzvf certs.tar.gz
+tar -xzvf root-ca.tar.gz
+update-ca-certificates
