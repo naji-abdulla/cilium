@@ -1,0 +1,1044 @@
+diff --git a/bpf/bpf_host.c b/bpf/bpf_host.c
+index 257feb41ae..65c70882e0 100644
+--- a/bpf/bpf_host.c
++++ b/bpf/bpf_host.c
+@@ -461,6 +461,33 @@ handle_ipv4(struct __ctx_buff *ctx, __u32 secctx,
+ 	struct iphdr *ip4;
+ 	int ret;
+ 
++/*	
++	if (revalidate_data(ctx, &data, &data_end, &ip4))
++	{
++		if (ip4 != NULL)
++		{
++			int val1, val2;
++
++
++			struct iphdr *inner_ip4 = NULL;
++			printk("host - handle_ipv4 src %x dest %x proto %d\n", ip4->saddr, ip4->daddr, ip4->protocol);
++			inner_ip4 = (struct iphdr *)((char *)ip4 + 50);
++			printk("host - handle_ipv4 inner-src %x inner-dest %x\n", inner_ip4->saddr, inner_ip4->daddr);
++
++
++			val1 = 200;
++			val2 = 1;
++			cilium_dbg(ctx, DBG_GENERIC, val1, val2);
++		}
++	}
++*/
++        if (1) {
++             int val1, val2;
++             val1 = 200;
++             val2 = 1;
++             cilium_dbg(ctx, DBG_GENERIC, val1, val2);
++        }
++        
+ 	if (!revalidate_data(ctx, &data, &data_end, &ip4))
+ 		return DROP_INVALID;
+ 
+@@ -505,19 +532,54 @@ handle_ipv4(struct __ctx_buff *ctx, __u32 secctx,
+ 	if (from_host) {
+ 		/* We're on the egress path of cilium_host. */
+ 		ret = ipv4_host_policy_egress(ctx, secctx, ipcache_srcid, &monitor);
++		
++		if (1)
++		{
++			int val1, val2;
++			val1 = 200;
++			val2 = 10;
++			cilium_dbg(ctx, DBG_GENERIC, val1, val2);
++		}
++		
+ 		if (IS_ERR(ret))
+ 			return ret;
+ 	} else if (!ctx_skip_host_fw(ctx)) {
+ 		/* We're on the ingress path of the native device. */
++		
++		if (1)
++		{
++			int val1, val2;
++			val1 = 200;
++			val2 = 11;
++			cilium_dbg(ctx, DBG_GENERIC, val1, val2);
++
++		}
++		
+ 		ret = ipv4_host_policy_ingress(ctx, &remote_id);
+ 		if (IS_ERR(ret))
+ 			return ret;
+ 	}
+ #endif /* ENABLE_HOST_FIREWALL */
+ 
++	if (1)
++	{
++		int val1, val2;
++		val1 = 200;
++		val2 = 111;
++		cilium_dbg(ctx, DBG_GENERIC, val1, val2);
++	}
++
+ 	if (skip_redirect)
+ 		return CTX_ACT_OK;
+ 
++	if (1)
++	{
++		int val1, val2;
++		val1 = 200;
++		val2 = 112;
++		cilium_dbg(ctx, DBG_GENERIC, val1, val2);
++	}
++
+ 	tuple.nexthdr = ip4->protocol;
+ 
+ 	if (from_host) {
+@@ -539,6 +601,16 @@ handle_ipv4(struct __ctx_buff *ctx, __u32 secctx,
+ 		/* Let through packets to the node-ip so they are processed by
+ 		 * the local ip stack.
+ 		 */
++		
++		if (1)
++		{
++			int val1, val2;
++			//printk("host  - lookup_ip4_endpoint %x %x \n", ip4->saddr, ip4->daddr);
++			val1 = 200;
++			val2 = 12;
++			cilium_dbg(ctx, DBG_GENERIC, val1, val2);
++		}
++    
+ 		if (ep->flags & ENDPOINT_F_HOST)
+ 			return CTX_ACT_OK;
+ 
+@@ -612,7 +684,15 @@ static __always_inline int
+ tail_handle_ipv4(struct __ctx_buff *ctx, __u32 ipcache_srcid, const bool from_host)
+ {
+ 	__u32 proxy_identity = ctx_load_meta(ctx, CB_SRC_IDENTITY);
+-	int ret;
++	int ret = 0;
++
++	if (1)
++	{
++		int val1, val2;
++		val1 = 200;
++		val2 = 9;
++		cilium_dbg(ctx, DBG_GENERIC, val1, val2);
++	}
+ 
+ 	ctx_store_meta(ctx, CB_SRC_IDENTITY, 0);
+ 
+@@ -844,6 +924,35 @@ do_netdev(struct __ctx_buff *ctx, __u16 proto, const bool from_host)
+ 	__u32 __maybe_unused identity = 0;
+ 	__u32 __maybe_unused ipcache_srcid = 0;
+ 	int ret;
++	/*
++	//void *data, *data_end;
++	struct iphdr *ip4 = NULL;
++
++	//if (revalidate_data(ctx, &data, &data_end, &ip4))
++	{
++		if (ip4 != NULL)
++		{
++			int val1, val2;
++			//printk("host - do_netdev src %x dest %x proto %d\n", ip4->saddr, ip4->daddr, ip4->protocol);
++			val1 = 200;
++			val2 = 3;
++			cilium_dbg(ctx, DBG_GENERIC, val1, val2);
++		} else {
++			int val1, val2;
++			// printk("host - do_netdev src %x dest %x proto %d\n", ip4->saddr, ip4->daddr, ip4->protocol);
++			val1 = 200;
++			val2 = 3;
++			cilium_dbg(ctx, DBG_GENERIC, val1, val2);
++		}
++	}
++	*/
++	
++	if (1) {
++	               int val1, val2;
++			val1 = 200;
++			val2 = 3;
++			cilium_dbg(ctx, DBG_GENERIC, val1, val2);
++	}
+ 
+ #ifdef ENABLE_IPSEC
+ 	if (!from_host && !do_decrypt(ctx, proto))
+@@ -910,6 +1019,13 @@ do_netdev(struct __ctx_buff *ctx, __u16 proto, const bool from_host)
+ # endif
+ 			ep_tail_call(ctx, CILIUM_CALL_IPV4_FROM_HOST);
+ 		} else {
++			if (1)
++			{
++				int val1, val2;
++				val1 = 200;
++				val2 = 301;
++				cilium_dbg(ctx, DBG_GENERIC, val1, val2);
++			}
+ 			ep_tail_call(ctx, CILIUM_CALL_IPV4_FROM_LXC);
+ 		}
+ 		/* We are not returning an error here to always allow traffic to
+@@ -972,6 +1088,34 @@ __section("from-netdev")
+ int from_netdev(struct __ctx_buff *ctx)
+ {
+ 	__u32 __maybe_unused vlan_id;
++	/*
++	//void *data, *data_end;
++	struct iphdr *ip4 = NULL;
++
++	//if (revalidate_data(ctx, &data, &data_end, &ip4))
++	{
++		if (ip4 != NULL)
++		{
++			int val1, val2;
++			//printk("host - from_netdev src %x dest %x proto %d\n", ip4->saddr, ip4->daddr, ip4->protocol);
++			val1 = 200;
++			val2 = 4;
++			cilium_dbg(ctx, DBG_GENERIC, val1, val2);
++		} else {
++			int val1, val2;
++			val1 = 200;
++			val2 = 4;
++			cilium_dbg(ctx, DBG_GENERIC, val1, val2);
++		}
++	}
++	*/
++	
++	if (1) {
++	        int val1, val2;
++			val1 = 200;
++			val2 = 4;
++			cilium_dbg(ctx, DBG_GENERIC, val1, val2);
++	}
+ 
+ 	/* Filter allowed vlan id's and pass them back to kernel.
+ 	 */
+@@ -1017,6 +1161,42 @@ int to_netdev(struct __ctx_buff *ctx __maybe_unused)
+ 	__u32 monitor = 0;
+ 	__u32 __maybe_unused vlan_id;
+ 	int ret = CTX_ACT_OK;
++	/*
++	//void *data, *data_end;
++	struct iphdr *ip4 = NULL;
++
++	printk("bpf_host -netdev \n");
++
++	//if (revalidate_data(ctx, &data, &data_end, &ip4))
++	{
++		if (ip4 != NULL)
++		{
++			int val1, val2;
++
++			struct iphdr *inner_ip4 = NULL;
++			printk("host - to_netdev src %x dest %x proto %d\n", ip4->saddr, ip4->daddr, ip4->protocol);
++			inner_ip4 = (struct iphdr *)((char *)ip4 + 50);
++			printk("host - to_netdev4 inner-src %x inner-dest %x\n", inner_ip4->saddr, inner_ip4->daddr);
++
++
++			val1 = 200;
++			val2 = 5;
++			cilium_dbg(ctx, DBG_GENERIC, val1, val2);
++		} else {
++			int val1, val2;
++			val1 = 200;
++			val2 = 5;
++			cilium_dbg(ctx, DBG_GENERIC, val1, val2);
++		}
++	}
++        */
++        
++        if (1) {
++			int val1, val2;
++			val1 = 200;
++			val2 = 5;
++			cilium_dbg(ctx, DBG_GENERIC, val1, val2);        
++        }
+ 
+ 	/* Filter allowed vlan id's and pass them back to kernel.
+ 	 */
+diff --git a/bpf/bpf_lxc.c b/bpf/bpf_lxc.c
+index e0b6338be7..d87aee705c 100644
+--- a/bpf/bpf_lxc.c
++++ b/bpf/bpf_lxc.c
+@@ -51,6 +51,7 @@
+ #include "lib/nodeport.h"
+ #include "lib/policy_log.h"
+ 
++
+ #if !defined(ENABLE_HOST_SERVICES_FULL) || defined(ENABLE_SOCKET_LB_HOST_ONLY)
+ # define ENABLE_PER_PACKET_LB
+ #endif
+@@ -552,10 +553,32 @@ static __always_inline int handle_ipv4_from_lxc(struct __ctx_buff *ctx,
+ 	enum trace_reason reason;
+ 	enum ct_status ct_status;
+ 	__u16 proxy_port;
+-	int val1, val2;
++	int debug = 1;
++
++	if(debug) { 
++		int val1, val2;
++		val1 = 500;
++		val2 = 3;
++		cilium_dbg(ctx, DBG_GENERIC, val1, val2);
++	}
+ 
+ 	if (!revalidate_data(ctx, &data, &data_end, &ip4))
+ 		return DROP_INVALID;
++	else {
++			int val1, val2;
++			val1 = 500;
++			val2 = 31;
++			cilium_dbg(ctx, DBG_GENERIC, val1, val2);
++		
++		/*
++			if (ip4 != NULL)
++			{
++				cilium_dbg(ctx, DBG_GENERIC, ip4->saddr, ip4->daddr);
++				//printk("to-overlay src %x dest %x proto %d\n", ip4->saddr, ip4->daddr, ip4->protocol);
++			}
++		*/
++		
++	}	
+ 
+ /* If IPv4 fragmentation is disabled
+  * AND a IPv4 fragmented packet is received,
+@@ -578,9 +601,15 @@ static __always_inline int handle_ipv4_from_lxc(struct __ctx_buff *ctx,
+ 
+ 	l4_off = l3_off + ipv4_hdrlen(ip4);
+ 
+-        val1 = 200;
+-        val2 = 300;
+-	cilium_dbg(ctx, DBG_GENERIC, val1, val2);
++	if (1)
++	{
++		int val1, val2;
++		val1 = 500;
++		val2 = 32;
++		cilium_dbg(ctx, DBG_GENERIC, val1, val2);
++		//cilium_dbg(ctx, DBG_GENERIC, tuple.saddr, tuple.daddr);
++		// printk("to-overlay src %x dest %x proto %d\n", ip4->saddr, ip4->daddr, ip4->protocol);
++	}
+ 
+ #ifdef ENABLE_PER_PACKET_LB
+ 	{
+@@ -606,6 +635,18 @@ static __always_inline int handle_ipv4_from_lxc(struct __ctx_buff *ctx,
+ 			hairpin_flow |= ct_state_new.loopback;
+ 		}
+ 	}
++	{
++		int val1, val2;
++		val1 = 500;
++		val2 = 33;
++		cilium_dbg(ctx, DBG_GENERIC, val1, val2);
++/*
++	if (ip4 != NULL) {
++		cilium_dbg(ctx, DBG_GENERIC, ip4->saddr, ip4->daddr);
++		//printk("to-overlay src %x dest %x proto %d\n", ip4->saddr, ip4->daddr, ip4->protocol);
++	}
++*/
++	}
+ 
+ skip_service_lookup:
+ #endif /* ENABLE_PER_PACKET_LB */
+@@ -663,7 +704,15 @@ skip_service_lookup:
+ 		} else {
+ 			*dst_id = WORLD_ID;
+ 		}
+-
++		if (1)
++		{
++			int val1, val2;
++			val1 = 500;
++			val2 = 34;
++			cilium_dbg(ctx, DBG_GENERIC, val1, val2);
++			//cilium_dbg(ctx, DBG_GENERIC, tunnel_endpoint, info->sec_label);
++			//printk("to-overlay src %x dest %x proto %d\n", ip4->saddr, ip4->daddr, ip4->protocol);
++		}
+ 		cilium_dbg(ctx, info ? DBG_IP_ID_MAP_SUCCEED4 : DBG_IP_ID_MAP_FAILED4,
+ 			   orig_dip, *dst_id);
+ 	}
+@@ -812,6 +861,16 @@ ct_recreate4:
+ 	}
+ 
+ #if defined(ENABLE_HOST_FIREWALL) && !defined(ENABLE_ROUTING)
++		if (1)
++		{
++			int val1, val2;
++			val1 = 500;
++			val2 = 35;
++			cilium_dbg(ctx, DBG_GENERIC, val1, val2);
++			//cilium_dbg(ctx, DBG_GENERIC, tunnel_endpoint, info->sec_label);
++			//printk("to-overlay src %x dest %x proto %d\n", ip4->saddr, ip4->daddr, ip4->protocol);
++		}
++
+ 	/* If the destination is the local host and per-endpoint routes are
+ 	 * enabled, jump to the bpf_host program to enforce ingress host policies.
+ 	 */
+@@ -896,8 +955,18 @@ skip_egress_gateway:
+ 		key.ip4 = orig_dip & IPV4_MASK;
+ 		key.family = ENDPOINT_KEY_IPV4;
+ 
+-		ret = encap_and_redirect_lxc(ctx, tunnel_endpoint, encrypt_key,
+-					     &key, SECLABEL, monitor);
++		if (1)
++		{
++			int val1, val2;
++			val1 = 500;
++			val2 = 36;
++			cilium_dbg(ctx, DBG_GENERIC, val1, val2);
++			cilium_dbg(ctx, DBG_GENERIC, orig_dip, tunnel_endpoint);
++			//printk("to-overlay src %x dest %x proto %d\n", ip4->saddr, ip4->daddr, ip4->protocol);
++		}
++
++		ret = encap_and_redirect_lxc(ctx, orig_dip, encrypt_key,
++									 &key, SECLABEL, monitor);
+ 		if (ret == DROP_NO_TUNNEL_ENDPOINT)
+ 			goto pass_to_stack;
+ 		/* If not redirected noteably due to IPSEC then pass up to stack
+@@ -922,12 +991,34 @@ to_host:
+ 	if (is_defined(ENABLE_HOST_FIREWALL) && *dst_id == HOST_ID) {
+ 		send_trace_notify(ctx, TRACE_TO_HOST, SECLABEL, HOST_ID, 0,
+ 				  HOST_IFINDEX, reason, monitor);
++		if (1)
++		{
++			int val1, val2;
++			val1 = 500;
++			val2 = 37;
++			cilium_dbg(ctx, DBG_GENERIC, val1, val2);
++			//printk("to-overlay src %x dest %x proto %d\n", ip4->saddr, ip4->daddr, ip4->protocol);
++		}
++
+ 		return ctx_redirect(ctx, HOST_IFINDEX, BPF_F_INGRESS);
+ 	}
+ #endif
+ 
+ pass_to_stack:
+ #ifdef ENABLE_ROUTING
++	if (1)
++	{
++		int val1, val2;
++		val1 = 500;
++		val2 = 38;
++		cilium_dbg(ctx, DBG_GENERIC, val1, val2);
++/*
++		if (ip4 != NULL) {
++		cilium_dbg(ctx, DBG_GENERIC, ip4->saddr, ip4->daddr);
++		//printk("to-overlay src %x dest %x proto %d\n", ip4->saddr, ip4->daddr, ip4->protocol);
++		}
++*/
++	}
+ 	ret = ipv4_l3(ctx, l3_off, NULL, (__u8 *) &router_mac.addr, ip4);
+ 	if (unlikely(ret != CTX_ACT_OK))
+ 		return ret;
+@@ -976,7 +1067,17 @@ declare_tailcall_if(__or3(is_defined(ENABLE_IPV4), is_defined(ENABLE_IPV6),
+ int tail_handle_ipv4(struct __ctx_buff *ctx)
+ {
+ 	__u32 dst_id = 0;
+-	int ret = handle_ipv4_from_lxc(ctx, &dst_id);
++	int ret = 0;
++
++	if (1)
++	{
++		int val1, val2;
++		val1 = 500;
++		val2 = 9;
++		cilium_dbg(ctx, DBG_GENERIC, val1, val2);
++	}
++
++	handle_ipv4_from_lxc(ctx, &dst_id);
+ 
+ 	if (IS_ERR(ret))
+ 		return send_drop_notify(ctx, SECLABEL, dst_id, 0, ret,
+@@ -1037,6 +1138,12 @@ int handle_xgress(struct __ctx_buff *ctx)
+ {
+ 	__u16 proto;
+ 	int ret;
++	int val1, val2;
++
++
++	val1 = 500;
++	val2 = 2;
++	cilium_dbg(ctx, DBG_GENERIC, val1, val2);
+ 
+ 	bpf_clear_meta(ctx);
+ 	reset_queue_mapping(ctx);
+@@ -1396,8 +1503,23 @@ ipv4_policy(struct __ctx_buff *ctx, int ifindex, __u32 src_label, enum ct_status
+ 	__u8 policy_match_type = POLICY_MATCH_NONE;
+ 	__u8 audited = 0;
+ 
+-	if (!revalidate_data(ctx, &data, &data_end, &ip4))
++	if (!revalidate_data(ctx, &data, &data_end, &ip4)) {
+ 		return DROP_INVALID;
++	} else {
++
++		int val1, val2;
++		val1 = 500;
++		val2 = 7;
++		cilium_dbg(ctx, DBG_GENERIC, val1, val2);
++	
++		/*
++		if (ip4 != NULL) {
++			cilium_dbg(ctx, DBG_GENERIC, ip4->saddr, ip4->daddr);
++		}
++		*/
++	
++	}
++
+ 	has_l4_header = ipv4_has_l4_header(ip4);
+ 
+ 	policy_clear_mark(ctx);
+@@ -1473,6 +1595,14 @@ ipv4_policy(struct __ctx_buff *ctx, int ifindex, __u32 src_label, enum ct_status
+ 		goto skip_policy_enforcement;
+ #endif /* ENABLE_PER_PACKET_LB && !DISABLE_LOOPBACK_LB */
+ 
++	if (1) {
++		int val1, val2;
++		val1 = 500;
++		val2 = 71;
++		cilium_dbg(ctx, DBG_GENERIC, val1, val2);
++		//cilium_dbg(ctx, DBG_GENERIC, src_label, SECLABEL);
++	}
++
+ 	verdict = policy_can_access_ingress(ctx, src_label, SECLABEL,
+ 					    tuple.dport, tuple.nexthdr,
+ 					    is_untracked_fragment,
+@@ -1567,10 +1697,26 @@ skip_policy_enforcement:
+ 	ctx_change_type(ctx, PACKET_HOST);
+ #else
+ 	ifindex = ctx_load_meta(ctx, CB_IFINDEX);
+-	if (ifindex)
++	if (ifindex) {
++		if (1)
++		{
++			int val1, val2;
++			val1 = 500;
++			val2 = 72;
++			cilium_dbg(ctx, DBG_GENERIC, val1, val2);
++			cilium_dbg(ctx, DBG_GENERIC, orig_sip, ifindex);
++		}
+ 		return redirect_ep(ctx, ifindex, from_host);
++	}
+ #endif /* ENABLE_ROUTING && TUNNEL_MODE && !ENABLE_NODEPORT */
+ 
++	if (1)
++	{
++		int val1, val2;
++		val1 = 500;
++		val2 = 73;
++		cilium_dbg(ctx, DBG_GENERIC, val1, val2);
++	}
+ 	return CTX_ACT_OK;
+ }
+ 
+@@ -1589,6 +1735,14 @@ int tail_ipv4_policy(struct __ctx_buff *ctx)
+ 	ctx_store_meta(ctx, CB_SRC_LABEL, 0);
+ 	ctx_store_meta(ctx, CB_FROM_HOST, 0);
+ 
++	if (1)
++	{
++		int val1, val2;
++		val1 = 500;
++		val2 = 9;
++		cilium_dbg(ctx, DBG_GENERIC, val1, val2);
++	}
++
+ 	ret = ipv4_policy(ctx, ifindex, src_label, &ct_status, &tuple,
+ 			  &proxy_port, from_host);
+ 	if (ret == POLICY_ACT_PROXY_REDIRECT) {
+@@ -1634,6 +1788,19 @@ int tail_ipv4_to_endpoint(struct __ctx_buff *ctx)
+ 	if (!revalidate_data(ctx, &data, &data_end, &ip4)) {
+ 		ret = DROP_INVALID;
+ 		goto out;
++	} else {
++
++		int val1, val2;
++		val1 = 500;
++		val2 = 6;
++		cilium_dbg(ctx, DBG_GENERIC, val1, val2);
++
++		/*
++		if (ip4 != NULL) {
++			cilium_dbg(ctx, DBG_GENERIC, ip4->saddr, ip4->daddr);
++		}
++		*/
++
+ 	}
+ 
+ 	/* Packets from the proxy will already have a real identity. */
+@@ -1642,8 +1809,16 @@ int tail_ipv4_to_endpoint(struct __ctx_buff *ctx)
+ 
+ 		info = lookup_ip4_remote_endpoint(ip4->saddr);
+ 		if (info != NULL) {
+-			__u32 sec_label = info->sec_label;
+ 
++			__u32 sec_label = info->sec_label;
++			if (1)
++			{
++				int val1, val2;
++				val1 = 500;
++				val2 = 61;
++				cilium_dbg(ctx, DBG_GENERIC, val1, val2);
++				//cilium_dbg(ctx, DBG_GENERIC, ip4->saddr, sec_label);
++			}
+ 			if (sec_label) {
+ 				/* When SNAT is enabled on traffic ingressing
+ 				 * into Cilium, all traffic from the world will
+@@ -1811,6 +1986,11 @@ int handle_to_container(struct __ctx_buff *ctx)
+ 	__u32 magic, identity = 0;
+ 	__u16 proto;
+ 	int ret;
++	int val1, val2;
++
++	val1 = 500;
++	val2 = 1;
++	cilium_dbg(ctx, DBG_GENERIC, val1, val2);
+ 
+ 	if (!validate_ethertype(ctx, &proto)) {
+ 		ret = DROP_UNSUPPORTED_L2;
+@@ -1859,6 +2039,9 @@ int handle_to_container(struct __ctx_buff *ctx)
+ #endif /* ENABLE_IPV6 */
+ #ifdef ENABLE_IPV4
+ 	case bpf_htons(ETH_P_IP):
++		val1 = 500;
++		val2 = 2;
++		cilium_dbg(ctx, DBG_GENERIC, val1, val2);
+ 		invoke_tailcall_if(__or(is_defined(ENABLE_IPV4), is_defined(ENABLE_IPV6)),
+ 				   CILIUM_CALL_IPV4_TO_ENDPOINT, tail_ipv4_to_endpoint);
+ 		break;
+diff --git a/bpf/bpf_network.c b/bpf/bpf_network.c
+index fb108ed6df..760a447d45 100644
+--- a/bpf/bpf_network.c
++++ b/bpf/bpf_network.c
+@@ -11,16 +11,41 @@
+ #include "lib/trace.h"
+ #include "lib/encrypt.h"
+ 
+-__section("from-network")
+-int from_network(struct __ctx_buff *ctx)
++
++
++__section("from-network") int from_network(struct __ctx_buff *ctx)
+ {
+ 	int ret = CTX_ACT_OK;
+-
++	//void *data, *data_end;
++	//struct iphdr *ip4 = NULL;
+ 	__u16 proto __maybe_unused;
+ 	enum trace_reason reason = 0;
+ 	enum trace_point obs_point_to = TRACE_TO_STACK;
+ 	enum trace_point obs_point_from = TRACE_FROM_NETWORK;
+ 
++
++	/*
++
++	if (revalidate_data(ctx, &data, &data_end, &ip4))
++	{
++		if (ip4 != NULL )
++		{
++			int val1, val2;
++			printk("from_network - src %x dest %x\n", ip4->saddr, ip4->daddr);
++			val1 = 300;
++			val2 = 1;
++			cilium_dbg(ctx, DBG_GENERIC, val1, val2);
++		}
++	}
++	*/
++
++	if (1) {
++		int val1, val2;
++		val1 = 300;
++		val2 = 1;
++		cilium_dbg(ctx, DBG_GENERIC, val1, val2);
++	}
++
+ 	bpf_clear_meta(ctx);
+ 
+ 	/* This program should be attached to the tc-ingress of
+diff --git a/bpf/bpf_overlay.c b/bpf/bpf_overlay.c
+index 1163708a4d..820985d9df 100644
+--- a/bpf/bpf_overlay.c
++++ b/bpf/bpf_overlay.c
+@@ -32,6 +32,8 @@
+ #include "lib/identity.h"
+ #include "lib/nodeport.h"
+ 
++
++
+ #ifdef ENABLE_IPV6
+ static __always_inline int handle_ipv6(struct __ctx_buff *ctx,
+ 				       __u32 *identity)
+@@ -186,6 +188,39 @@ static __always_inline int handle_ipv4(struct __ctx_buff *ctx, __u32 *identity)
+ 	struct bpf_tunnel_key key = {};
+ 	bool decrypted;
+ 
++
++	//printk("bpf_overlay - handle_ipv4\n");
++
++	/*
++	if (revalidate_data(ctx, &data, &data_end, &ip4))
++	{
++
++		if (ip4 != NULL && (ip4->protocol == 17)) {
++			int val1, val2;
++			val1 = 100;
++			val2 = 1;
++			cilium_dbg(ctx, DBG_GENERIC, val1, val2);
++			cilium_dbg(ctx, DBG_GENERIC, ip4->saddr, ip4->daddr);
++			printk("overlay - handle_ipv4 src %x dest %x proto %d\n", ip4->saddr, ip4->daddr, ip4->protocol);
++		}
++
++		if (1) {
++			int val1, val2;
++			val1 = 100;
++			val2 = 1;
++			cilium_dbg(ctx, DBG_GENERIC, val1, val2);
++		}
++	}
++
++	*/
++
++	if (1)
++	{
++		int val1, val2;
++		val1 = 100;
++		val2 = 1;
++		cilium_dbg(ctx, DBG_GENERIC, val1, val2);
++	}
+ 	/* verifier workaround (dereference of modified ctx ptr) */
+ 	if (!revalidate_data_pull(ctx, &data, &data_end, &ip4))
+ 		return DROP_INVALID;
+@@ -285,6 +320,17 @@ not_esp:
+ 		if (ep->flags & ENDPOINT_F_HOST)
+ 			goto to_host;
+ 
++		if (1)
++		{
++			int val1, val2;
++			val1 = 100;
++			val2 = 11;
++			cilium_dbg(ctx, DBG_GENERIC, val1, val2);
++			//cilium_dbg(ctx, DBG_GENERIC, ip4->daddr, ep->ifindex);
++			//printk("overlay - handle_ipv4 src %x dest %x proto %d\n", ip4->saddr, ip4->daddr, ip4->protocol);
++		}
++
++
+ 		return ipv4_local_delivery(ctx, ETH_HLEN, *identity, ip4, ep,
+ 					   METRIC_INGRESS, false);
+ 	}
+@@ -304,6 +350,25 @@ to_host:
+ 		if (ret != CTX_ACT_OK)
+ 			return ret;
+ 
++		/*
++		if (ip4 != NULL)
++		{
++			int val1, val2;
++			val1 = 100;
++			val2 = 12;
++			cilium_dbg(ctx, DBG_GENERIC, val1, val2);
++			// cilium_dbg(ctx, DBG_GENERIC, ip4->daddr, ep->);
++			// printk("overlay - handle_ipv4 src %x dest %x proto %d\n", ip4->saddr, ip4->daddr, ip4->protocol);
++		}
++		*/
++		if (1)
++		{
++			int val1, val2;
++			val1 = 100;
++			val2 = 12;
++			cilium_dbg(ctx, DBG_GENERIC, val1, val2);
++		}
++
+ 		cilium_dbg_capture(ctx, DBG_CAPTURE_DELIVERY, HOST_IFINDEX);
+ 		return ctx_redirect(ctx, HOST_IFINDEX, 0);
+ 	}
+@@ -316,7 +381,22 @@ __section_tail(CILIUM_MAP_CALLS, CILIUM_CALL_IPV4_FROM_LXC)
+ int tail_handle_ipv4(struct __ctx_buff *ctx)
+ {
+ 	__u32 src_identity = 0;
+-	int ret = handle_ipv4(ctx, &src_identity);
++	int ret =0;
++
++	if (1)
++	{
++		int val1, val2;
++		val1 = 100;
++		val2 = 9;
++		cilium_dbg(ctx, DBG_GENERIC, val1, val2);
++	}
++
++
++	ret = handle_ipv4(ctx, &src_identity);
++
++	//printk("bpf_overlay - tail_handle_ipv4\n");
++
++
+ 
+ 	if (IS_ERR(ret))
+ 		return send_drop_notify_error(ctx, src_identity, ret,
+@@ -364,16 +444,39 @@ int from_overlay(struct __ctx_buff *ctx)
+ {
+ 	__u16 proto;
+ 	int ret;
++	//void *data, *data_end;
++	//struct iphdr *ip4 = NULL;
+ 
+ 	bpf_clear_meta(ctx);
+ 	bpf_skip_nodeport_clear(ctx);
+ 
++	//printk("bpf_overlay - from_overlay\n");
++
++	//if (revalidate_data(ctx, &data, &data_end, &ip4))
++		if (1) {
++			int val1, val2;
++			val1 = 100;
++			val2 = 2;
++			cilium_dbg(ctx, DBG_GENERIC, val1, val2);
++			//cilium_dbg(ctx, DBG_GENERIC, ip4->saddr, ip4->daddr);
++			//printk("from_overlay src %x dest %x proto %d\n", ip4->saddr, ip4->daddr, ip4->protocol);
++		}
++
+ 	if (!validate_ethertype(ctx, &proto)) {
+ 		/* Pass unknown traffic to the stack */
+ 		ret = CTX_ACT_OK;
+ 		goto out;
+ 	}
+ 
++	if (1)
++	{
++		int val1, val2;
++		val1 = 100;
++		val2 = 21;
++		cilium_dbg(ctx, DBG_GENERIC, val1, val2);
++		//printk("from_overlay src %x dest %x proto %d\n", ip4->saddr, ip4->daddr, ip4->protocol);
++	}
++
+ /* We need to handle following possible packets come to this program
+  *
+  * 1. ESP packets coming from overlay (encrypted and not marked)
+@@ -423,6 +526,25 @@ int from_overlay(struct __ctx_buff *ctx)
+ 
+ 	case bpf_htons(ETH_P_IP):
+ #ifdef ENABLE_IPV4
++		if (1)
++		{
++			int val1, val2;
++			val1 = 100;
++			val2 = 22;
++			cilium_dbg(ctx, DBG_GENERIC, val1, val2);
++
++
++		}
++
++		if (1) {
++			char fmt[] = "val1 %d val2 %d \n";
++			int val1, val2;
++
++			val1 = 100;
++			val2 = 22;
++			trace_printk(fmt, sizeof(fmt), val1, val2);
++		}
++
+ 		ep_tail_call(ctx, CILIUM_CALL_IPV4_FROM_LXC);
+ 		ret = DROP_MISSED_TAIL_CALL;
+ #else
+@@ -447,11 +569,54 @@ __section("to-overlay")
+ int to_overlay(struct __ctx_buff *ctx)
+ {
+ 	int ret;
++	//void *data, *data_end;
++	//struct iphdr *ip4 = NULL;
++
++	//printk("bpf_overlay - to_overlay\n");
++
++	/*
++	if (revalidate_data(ctx, &data, &data_end, &ip4)) 
++	{
++		if (ip4 != NULL) {
++			int val1, val2;
++			val1 = 100;
++			val2 = 3;
++			cilium_dbg(ctx, DBG_GENERIC, val1, val2);
++			cilium_dbg(ctx, DBG_GENERIC, ip4->saddr, ip4->daddr);
++			//printk("to-overlay src %x dest %x proto %d\n", ip4->saddr, ip4->daddr, ip4->protocol);
++		} else {
++			int val1, val2;
++			val1 = 100;
++			val2 = 3;
++			cilium_dbg(ctx, DBG_GENERIC, val1, val2);
++		}
++	}
++	*/
++
++	if (1)
++	{
++		int val1, val2;
++		val1 = 100;
++		val2 = 3;
++		cilium_dbg(ctx, DBG_GENERIC, val1, val2);
++		// cilium_dbg(ctx, DBG_GENERIC, ip4->saddr, ip4->daddr);
++		// printk("to-overlay src %x dest %x proto %d\n", ip4->saddr, ip4->daddr, ip4->protocol);
++	}
+ 
+ 	ret = encap_remap_v6_host_address(ctx, true);
+ 	if (unlikely(ret < 0))
+ 		goto out;
+ 
++	if (1)
++	{
++		int val1, val2;
++		val1 = 100;
++		val2 = 31;
++		cilium_dbg(ctx, DBG_GENERIC, val1, val2);
++		//cilium_dbg(ctx, DBG_GENERIC, ip4->saddr, ip4->daddr);
++		//printk("to-overlay src %x dest %x proto %d\n", ip4->saddr, ip4->daddr, ip4->protocol);
++	}
++
+ #ifdef ENABLE_BANDWIDTH_MANAGER
+ 	/* In tunneling mode, we should do this as close as possible to the
+ 	 * phys dev where FQ runs, but the issue is that the aggregate state
+@@ -468,6 +633,28 @@ int to_overlay(struct __ctx_buff *ctx)
+ 	}
+ #endif
+ 
++	/*
++	if (ip4 != NULL)
++	{
++		int val1, val2;
++		val1 = 100;
++		val2 = 32;
++		cilium_dbg(ctx, DBG_GENERIC, val1, val2);
++		//printk("to-overlay src %x dest %x proto %d\n", ip4->saddr, ip4->daddr, ip4->protocol);
++	} else {
++		int val1, val2;
++		val1 = 100;
++		val2 = 32;
++		cilium_dbg(ctx, DBG_GENERIC, val1, val2);
++	}
++	*/
++
++	if (1) {
++		int val1, val2;
++		val1 = 100;
++		val2 = 32;
++		cilium_dbg(ctx, DBG_GENERIC, val1, val2);
++	}
+ #ifdef ENABLE_NODEPORT
+ 	if ((ctx->mark & MARK_MAGIC_SNAT_DONE) == MARK_MAGIC_SNAT_DONE) {
+ 		ret = CTX_ACT_OK;
+@@ -476,8 +663,33 @@ int to_overlay(struct __ctx_buff *ctx)
+ 	ret = handle_nat_fwd(ctx);
+ #endif
+ out:
++
++	/*
++	if (ip4 != NULL)
++	{
++		int val1, val2;
++		val1 = 100;
++		val2 = 33;
++		cilium_dbg(ctx, DBG_GENERIC, val1, val2);
++		//printk("to-overlay src %x dest %x proto %d\n", ip4->saddr, ip4->daddr, ip4->protocol);
++	} else {
++		int val1, val2;
++		val1 = 100;
++		val2 = 33;
++		cilium_dbg(ctx, DBG_GENERIC, val1, val2);
++	}
++	*/
++
++	if (1) {
++		int val1, val2;
++		val1 = 100;
++		val2 = 33;
++		cilium_dbg(ctx, DBG_GENERIC, val1, val2);
++	}
++
+ 	if (IS_ERR(ret))
+ 		return send_drop_notify_error(ctx, 0, ret, CTX_ACT_DROP, METRIC_EGRESS);
++
+ 	return ret;
+ }
+ 
+diff --git a/bpf/lib/encap.h b/bpf/lib/encap.h
+index 4fe028aaf6..ed3c2ccbd3 100644
+--- a/bpf/lib/encap.h
++++ b/bpf/lib/encap.h
+@@ -147,10 +147,27 @@ static __always_inline int
+ __encap_and_redirect_with_nodeid(struct __ctx_buff *ctx, __u32 tunnel_endpoint,
+ 				 __u32 seclabel, __u32 monitor)
+ {
++	//void *data, *data_end;
++	struct iphdr *ip4 = NULL;
+ 	int ret = __encap_with_nodeid(ctx, tunnel_endpoint, seclabel, monitor);
+ 	if (ret != 0)
+ 		return ret;
+-
++	//if (revalidate_data(ctx, &data, &data_end, &ip4)) {}
++	{
++		if (ip4 != NULL)
++		{
++			int val1, val2;
++			val1 = 800;
++			val2 = 31;
++			cilium_dbg(ctx, DBG_GENERIC, val1, val2);
++			cilium_dbg(ctx, DBG_GENERIC, ip4->saddr, ip4->daddr);
++		} else {
++			int val1, val2;
++			val1 = 800;
++			val2 = 31;
++			cilium_dbg(ctx, DBG_GENERIC, val1, val2);
++		}
++	}
+ 	return ctx_redirect(ctx, ENCAP_IFINDEX, 0);
+ }
+ 
+@@ -188,6 +205,10 @@ encap_and_redirect_lxc(struct __ctx_buff *ctx, __u32 tunnel_endpoint,
+ {
+ 	struct endpoint_key *tunnel;
+ 
++		if (tunnel_endpoint == 0xc3ca8c0) {
++			printk("encap_and_redirect_lxc\n");
++		}
++
+ 	if (tunnel_endpoint) {
+ #ifdef ENABLE_IPSEC
+ 		if (encrypt_key)
+@@ -202,16 +223,30 @@ encap_and_redirect_lxc(struct __ctx_buff *ctx, __u32 tunnel_endpoint,
+ 		 * the tunnel, to apply the correct reverse DNAT.
+ 		 * See #14674 for details.
+ 		 */
++		if (tunnel_endpoint == 0xc3ca8c0) {
++			printk("ENABLE_NODEPORT\n");
++		}
+ 		return __encap_with_nodeid(ctx, tunnel_endpoint, seclabel, monitor);
+ #else
++		if (tunnel_endpoint == 0xc3ca8c0) {
++			printk("else\n");
++		}
+ 		return __encap_and_redirect_with_nodeid(ctx, tunnel_endpoint, seclabel, monitor);
+ #endif /* !ENABLE_NODEPORT && (ENABLE_IPSEC || ENABLE_HOST_FIREWALL) */
+ 	}
+ 
++	if (tunnel_endpoint == 0xc3ca8c0) {
++		printk("map_lookup_elem\n");
++	}
++
+ 	tunnel = map_lookup_elem(&TUNNEL_MAP, key);
+ 	if (!tunnel)
+ 		return DROP_NO_TUNNEL_ENDPOINT;
+ 
++	if (tunnel_endpoint == 0xc3ca8c0) {
++		printk("map_lookup_elem1\n");
++	}
++
+ #ifdef ENABLE_IPSEC
+ 	if (tunnel->key) {
+ 		__u8 min_encrypt_key = get_min_encrypt_key(tunnel->key);
+@@ -221,6 +256,10 @@ encap_and_redirect_lxc(struct __ctx_buff *ctx, __u32 tunnel_endpoint,
+ 						seclabel);
+ 	}
+ #endif
++	if (tunnel_endpoint == 0xc3ca8c0) {
++		printk("__encap_and_redirect_with_nodeid\n");
++	}
++
+ 	return __encap_and_redirect_with_nodeid(ctx, tunnel->ip4, seclabel, monitor);
+ }
+ 

@@ -1,0 +1,320 @@
+diff --git a/bpf/bpf_host.c b/bpf/bpf_host.c
+index 741235f92c..775b215b4c 100644
+--- a/bpf/bpf_host.c
++++ b/bpf/bpf_host.c
+@@ -459,8 +459,19 @@ handle_ipv4(struct __ctx_buff *ctx, __u32 secctx,
+ 	struct endpoint_info *ep;
+ 	void *data, *data_end;
+ 	struct iphdr *ip4;
++	struct iphdr *inner_ip4;
+ 	int ret;
+ 
++	if (revalidate_data(ctx, &data, &data_end, &ip4))
++	{
++		if (ip4 != NULL && (ip4->protocol == 17))
++		{
++			printk("host - handle_ipv4 src %x dest %x proto %d\n", ip4->saddr, ip4->daddr, ip4->protocol);
++			inner_ip4 = (struct iphdr *)((char *)ip4 + 50);
++			printk("host - handle_ipv4 inner-src %x inner-dest %x\n", inner_ip4->saddr, inner_ip4->daddr);
++		}
++	}
++
+ 	if (!revalidate_data(ctx, &data, &data_end, &ip4))
+ 		return DROP_INVALID;
+ 
+@@ -543,6 +554,11 @@ handle_ipv4(struct __ctx_buff *ctx, __u32 secctx,
+ 		/* Let through packets to the node-ip so they are processed by
+ 		 * the local ip stack.
+ 		 */
++		if (ip4 != NULL)
++		{
++			printk("host  - lookup_ip4_endpoint %x %x \n", ip4->saddr, ip4->daddr);
++		}
++
+ 		if (ep->flags & ENDPOINT_F_HOST)
+ 			return CTX_ACT_OK;
+ 
+@@ -848,6 +864,16 @@ do_netdev(struct __ctx_buff *ctx, __u16 proto, const bool from_host)
+ 	__u32 __maybe_unused identity = 0;
+ 	__u32 __maybe_unused ipcache_srcid = 0;
+ 	int ret;
++	void *data, *data_end;
++	struct iphdr *ip4;
++
++	if (revalidate_data(ctx, &data, &data_end, &ip4))
++	{
++		if (ip4 != NULL && (ip4->protocol == 17))
++		{
++			printk("host - do_netdev src %x dest %x proto %d\n", ip4->saddr, ip4->daddr, ip4->protocol);
++		}
++	}
+ 
+ #ifdef ENABLE_IPSEC
+ 	if (!from_host && !do_decrypt(ctx, proto))
+@@ -976,6 +1002,16 @@ __section("from-netdev")
+ int from_netdev(struct __ctx_buff *ctx)
+ {
+ 	__u32 __maybe_unused vlan_id;
++	void *data, *data_end;
++	struct iphdr *ip4;
++
++	if (revalidate_data(ctx, &data, &data_end, &ip4))
++	{
++		if (ip4 != NULL && (ip4->protocol == 17))
++		{
++			printk("host - from_netdev src %x dest %x proto %d\n", ip4->saddr, ip4->daddr, ip4->protocol);
++		}
++	}
+ 
+ 	/* Filter allowed vlan id's and pass them back to kernel.
+ 	 */
+@@ -1021,6 +1057,22 @@ int to_netdev(struct __ctx_buff *ctx __maybe_unused)
+ 	__u32 monitor = 0;
+ 	__u32 __maybe_unused vlan_id;
+ 	int ret = CTX_ACT_OK;
++	void *data, *data_end;
++	struct iphdr *ip4;
++	struct iphdr *inner_ip4;
++
++	//printk("bpf_host -netdev \n");
++
++	if (revalidate_data(ctx, &data, &data_end, &ip4))
++	{
++		if (ip4 != NULL && (ip4->protocol == 17))
++		{
++			printk("host - to_netdev src %x dest %x proto %d\n", ip4->saddr, ip4->daddr, ip4->protocol);
++			inner_ip4 = (struct iphdr *)((char *)ip4 + 50);
++			printk("host - to_netdev4 inner-src %x inner-dest %x\n", inner_ip4->saddr, inner_ip4->daddr);
++		}
++	}
++
+ 
+ 	/* Filter allowed vlan id's and pass them back to kernel.
+ 	 */
+@@ -1035,7 +1087,11 @@ int to_netdev(struct __ctx_buff *ctx __maybe_unused)
+ 		}
+ 	}
+ 
++	//printk("bpf_host -vlan_present \n");
+ #ifdef ENABLE_HOST_FIREWALL
++
++	//printk("bpf_host -ENABLE_HOST_FIREWALL \n");
++
+ 	if (!proto && !validate_ethertype(ctx, &proto)) {
+ 		ret = DROP_UNSUPPORTED_L2;
+ 		goto out;
+@@ -1070,6 +1126,9 @@ out:
+ 					      METRIC_EGRESS);
+ #endif /* ENABLE_HOST_FIREWALL */
+ 
++	//printk("bpf_host -ENABLE_HOST_FIREWALL pass \n");
++
++
+ #if defined(ENABLE_BANDWIDTH_MANAGER)
+ 	ret = edt_sched_departure(ctx);
+ 	/* No send_drop_notify_error() here given we're rate-limiting. */
+@@ -1080,6 +1139,8 @@ out:
+ 	}
+ #endif
+ 
++	//printk("bpf_host -ENABLE_BANDWIDTH_MANAGER pass \n");
++
+ #if defined(ENABLE_NODEPORT) && \
+ 	(!defined(ENABLE_DSR) || \
+ 	 (defined(ENABLE_DSR) && defined(ENABLE_DSR_HYBRID)) || \
+@@ -1097,6 +1158,10 @@ out:
+ 						      METRIC_EGRESS);
+ 	}
+ #endif
++
++	//printk("bpf_host -handle_nat_fwd pass \n");
++
++
+ #ifdef ENABLE_HEALTH_CHECK
+ 	ret = lb_handle_health(ctx);
+ 	if (IS_ERR(ret))
+@@ -1106,6 +1171,10 @@ out:
+ 	send_trace_notify(ctx, TRACE_TO_NETWORK, src_id, 0, 0,
+ 			  0, 0, monitor);
+ 
++	//printk("bpf_host -ENABLE_HEALTH_CHECK\n");
++
++
++
+ 	return ret;
+ }
+ 
+diff --git a/bpf/bpf_network.c b/bpf/bpf_network.c
+index fb108ed6df..e473af1098 100644
+--- a/bpf/bpf_network.c
++++ b/bpf/bpf_network.c
+@@ -15,12 +15,23 @@ __section("from-network")
+ int from_network(struct __ctx_buff *ctx)
+ {
+ 	int ret = CTX_ACT_OK;
+-
++	void *data, *data_end;
++	struct iphdr *ip4;
+ 	__u16 proto __maybe_unused;
+ 	enum trace_reason reason = 0;
+ 	enum trace_point obs_point_to = TRACE_TO_STACK;
+ 	enum trace_point obs_point_from = TRACE_FROM_NETWORK;
+ 
++
++
++	if (revalidate_data(ctx, &data, &data_end, &ip4))
++	{
++		if (ip4 != NULL && (ip4->protocol == 17))
++		{
++			printk("from_network - src %x dest %x proto %d\n", ip4->saddr, ip4->daddr, ip4->protocol);
++		}
++	}
++
+ 	bpf_clear_meta(ctx);
+ 
+ 	/* This program should be attached to the tc-ingress of
+diff --git a/bpf/bpf_overlay.c b/bpf/bpf_overlay.c
+index 1163708a4d..4b17e7f2e1 100644
+--- a/bpf/bpf_overlay.c
++++ b/bpf/bpf_overlay.c
+@@ -186,6 +186,16 @@ static __always_inline int handle_ipv4(struct __ctx_buff *ctx, __u32 *identity)
+ 	struct bpf_tunnel_key key = {};
+ 	bool decrypted;
+ 
++
++	//printk("bpf_overlay - handle_ipv4\n");
++
++	if (revalidate_data(ctx, &data, &data_end, &ip4))
++	{
++		if (ip4 != NULL && (ip4->protocol == 17)) {
++			printk("overlay - handle_ipv4 src %x dest %x proto %d\n", ip4->saddr, ip4->daddr, ip4->protocol);
++		}
++	}
++
+ 	/* verifier workaround (dereference of modified ctx ptr) */
+ 	if (!revalidate_data_pull(ctx, &data, &data_end, &ip4))
+ 		return DROP_INVALID;
+@@ -318,6 +328,8 @@ int tail_handle_ipv4(struct __ctx_buff *ctx)
+ 	__u32 src_identity = 0;
+ 	int ret = handle_ipv4(ctx, &src_identity);
+ 
++	//printk("bpf_overlay - tail_handle_ipv4\n");
++
+ 	if (IS_ERR(ret))
+ 		return send_drop_notify_error(ctx, src_identity, ret,
+ 					      CTX_ACT_DROP, METRIC_INGRESS);
+@@ -364,10 +376,21 @@ int from_overlay(struct __ctx_buff *ctx)
+ {
+ 	__u16 proto;
+ 	int ret;
++	void *data, *data_end;
++	struct iphdr *ip4;
+ 
+ 	bpf_clear_meta(ctx);
+ 	bpf_skip_nodeport_clear(ctx);
+ 
++	//printk("bpf_overlay - from_overlay\n");
++
++	if (revalidate_data(ctx, &data, &data_end, &ip4))
++	{
++		if (ip4 != NULL && (ip4->protocol == 17)) {
++			printk("from_overlay src %x dest %x proto %d\n", ip4->saddr, ip4->daddr, ip4->protocol);
++		}
++	}
++
+ 	if (!validate_ethertype(ctx, &proto)) {
+ 		/* Pass unknown traffic to the stack */
+ 		ret = CTX_ACT_OK;
+@@ -447,11 +470,22 @@ __section("to-overlay")
+ int to_overlay(struct __ctx_buff *ctx)
+ {
+ 	int ret;
++	void *data, *data_end;
++	struct iphdr *ip4;
++
++	//printk("bpf_overlay - to_overlay\n");
++
++	if (revalidate_data(ctx, &data, &data_end, &ip4)) {
++		if (ip4 != NULL && (ip4->protocol == 17)) {
++			printk("to-overlay src %x dest %x proto %d\n", ip4->saddr, ip4->daddr, ip4->protocol);
++		}
++	}
+ 
+ 	ret = encap_remap_v6_host_address(ctx, true);
+ 	if (unlikely(ret < 0))
+ 		goto out;
+ 
++
+ #ifdef ENABLE_BANDWIDTH_MANAGER
+ 	/* In tunneling mode, we should do this as close as possible to the
+ 	 * phys dev where FQ runs, but the issue is that the aggregate state
+@@ -476,8 +510,11 @@ int to_overlay(struct __ctx_buff *ctx)
+ 	ret = handle_nat_fwd(ctx);
+ #endif
+ out:
+-	if (IS_ERR(ret))
++	if (IS_ERR(ret)) {
++		//printk("bpf_overlay - send_drop_notify_error\n");
+ 		return send_drop_notify_error(ctx, 0, ret, CTX_ACT_DROP, METRIC_EGRESS);
++	}
++	//printk("bpf_overlay - ret\n");	
+ 	return ret;
+ }
+ 
+diff --git a/bpf/lib/encap.h b/bpf/lib/encap.h
+index 4fe028aaf6..a79c686894 100644
+--- a/bpf/lib/encap.h
++++ b/bpf/lib/encap.h
+@@ -188,6 +188,10 @@ encap_and_redirect_lxc(struct __ctx_buff *ctx, __u32 tunnel_endpoint,
+ {
+ 	struct endpoint_key *tunnel;
+ 
++		if (tunnel_endpoint == 0xc3ca8c0) {
++			printk("encap_and_redirect_lxc\n");
++		}
++
+ 	if (tunnel_endpoint) {
+ #ifdef ENABLE_IPSEC
+ 		if (encrypt_key)
+@@ -202,16 +206,30 @@ encap_and_redirect_lxc(struct __ctx_buff *ctx, __u32 tunnel_endpoint,
+ 		 * the tunnel, to apply the correct reverse DNAT.
+ 		 * See #14674 for details.
+ 		 */
++		if (tunnel_endpoint == 0xc3ca8c0) {
++			printk("ENABLE_NODEPORT\n");
++		}
+ 		return __encap_with_nodeid(ctx, tunnel_endpoint, seclabel, monitor);
+ #else
++		if (tunnel_endpoint == 0xc3ca8c0) {
++			printk("else\n");
++		}
+ 		return __encap_and_redirect_with_nodeid(ctx, tunnel_endpoint, seclabel, monitor);
+ #endif /* !ENABLE_NODEPORT && (ENABLE_IPSEC || ENABLE_HOST_FIREWALL) */
+ 	}
+ 
++	if (tunnel_endpoint == 0xc3ca8c0) {
++		printk("map_lookup_elem\n");
++	}
++
+ 	tunnel = map_lookup_elem(&TUNNEL_MAP, key);
+ 	if (!tunnel)
+ 		return DROP_NO_TUNNEL_ENDPOINT;
+ 
++	if (tunnel_endpoint == 0xc3ca8c0) {
++		printk("map_lookup_elem1\n");
++	}
++
+ #ifdef ENABLE_IPSEC
+ 	if (tunnel->key) {
+ 		__u8 min_encrypt_key = get_min_encrypt_key(tunnel->key);
+@@ -221,6 +239,10 @@ encap_and_redirect_lxc(struct __ctx_buff *ctx, __u32 tunnel_endpoint,
+ 						seclabel);
+ 	}
+ #endif
++	if (tunnel_endpoint == 0xc3ca8c0) {
++		printk("__encap_and_redirect_with_nodeid\n");
++	}
++
+ 	return __encap_and_redirect_with_nodeid(ctx, tunnel->ip4, seclabel, monitor);
+ }
+ 
