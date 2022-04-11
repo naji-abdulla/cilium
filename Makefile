@@ -487,7 +487,7 @@ check-microk8s: ## Validate if microk8s is ready to install cilium.
 	$(QUIET)microk8s.status >/dev/null \
 		|| (echo "Error: Microk8s is not running" && exit 1)
 
-LOCAL_IMAGE_TAG=local.3
+LOCAL_IMAGE_TAG=local.11
 microk8s: export DOCKER_REGISTRY=localhost:32000
 microk8s: export LOCAL_IMAGE=$(DOCKER_REGISTRY)/$(DOCKER_DEV_ACCOUNT)/cilium-dev:$(LOCAL_IMAGE_TAG)
 microk8s: check-microk8s ## Build cilium-dev docker image and import to microk8s
@@ -510,6 +510,24 @@ kind-image:
 	@echo "  DEPLOY image to kind ($(LOCAL_IMAGE))"
 	$(QUIET)$(CONTAINER_ENGINE) push $(LOCAL_IMAGE)
 	$(QUIET)kind load docker-image $(LOCAL_IMAGE)
+
+REMOTE_IMAGE_TAG=remote.11
+kind-remote-image: export REMOTE_DOCKER_REGISTRY=192.168.99.105:5000
+kind-remote-image: export REMOTE_IMAGE=$(REMOTE_DOCKER_REGISTRY)/$(DOCKER_DEV_ACCOUNT)/cilium-dev:$(REMOTE_IMAGE_TAG)
+kind-remote-image:
+	@$(ECHO_CHECK) kind is ready...
+	@kind get clusters >/dev/null
+	@docker images
+#	@docker rmi `docker images | grep "remote.11" | awk '{ print $3 }'`
+	$(QUIET)$(MAKE) dev-docker-image DOCKER_IMAGE_TAG=$(REMOTE_IMAGE_TAG) DOCKER_REGISTRY=$(REMOTE_DOCKER_REGISTRY)
+	$(QUIET)$(CONTAINER_ENGINE) push $(REMOTE_IMAGE)
+
+kind-remote-pull:
+	@$(ECHO_CHECK) kind is ready...
+	@kind get clusters >/dev/null
+	@echo "  DEPLOY image to kind ($(REMOTE_IMAGE))"
+	$(QUIET)kind load docker-image $(REMOTE_IMAGE)	
+
 
 precheck: logging-subsys-field ## Peform build precheck for the source code.
 ifeq ($(SKIP_K8S_CODE_GEN_CHECK),"false")
